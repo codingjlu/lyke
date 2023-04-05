@@ -102,8 +102,12 @@ program
     })
     app.use(express.static(path.join(process.cwd(), conf.output.dir)))
 
+    let lastCall = Date.now(),
+      timeout = 500
     let update = () => {}
     chokidar.watch(baseDir).on("change", async () => {
+      if (Date.now() - lastCall < timeout) return
+      lastCall = Date.now()
       await build(f, conf, true)
       update()
     })
