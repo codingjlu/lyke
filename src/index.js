@@ -1,28 +1,11 @@
 import fs from "fs/promises"
-import { existsSync, mkdirSync, copyFileSync, readdirSync, statSync } from "fs"
+import { existsSync, mkdirSync } from "fs"
 import path from "path"
 import { minify } from "minify"
 import beautify from "js-beautify"
 import { parse } from "node-html-parser"
 import defaultConfig from "../defaultConfig.js"
-
-function copyRecursiveSync(src, dest) {
-  const exists = existsSync(src)
-  if (!exists) return
-  const stats = exists && statSync(src)
-  const isDirectory = exists && stats.isDirectory()
-  if (isDirectory) {
-    mkdirSync(dest)
-    readdirSync(src).forEach(function (childItemName) {
-      copyRecursiveSync(
-        path.join(src, childItemName),
-        path.join(dest, childItemName)
-      )
-    })
-  } else {
-    copyFileSync(src, dest)
-  }
-}
+import copydir from "copy-dir"
 
 export default async function lyke(
   inputPath,
@@ -70,7 +53,7 @@ export default async function lyke(
   )
 
   // copy assets directory
-  copyRecursiveSync(
+  copydir.sync(
     path.join(process.cwd(), config.assets),
     path.join(process.cwd(), config.output.dir, config.output.assets)
   )
