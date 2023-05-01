@@ -81,6 +81,7 @@ async function processData(data, inputPath, dev) {
     const scripts = root.getElementsByTagName("script")
     let scriptContent = ""
     scripts.forEach((script) => {
+      if (script.hasAttribute("src")) return
       scriptContent += "\n" + script.innerHTML.trim()
       script.remove()
     })
